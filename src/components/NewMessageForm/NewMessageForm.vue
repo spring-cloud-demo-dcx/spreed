@@ -34,9 +34,10 @@
 		<div class="new-message">
 			<form class="new-message-form"
 				@submit.prevent>
+				<!-- Attachments menu -->
 				<div v-if="canUploadFiles || canShareFiles"
 					class="new-message-form__upload-menu">
-					<Actions ref="uploadMenu"
+					<Actions ref="attachmentsMenu"
 						:container="container"
 						:boundaries-element="containerElement"
 						:disabled="disabled"
@@ -58,8 +59,18 @@
 							@click.prevent="handleFileShare">
 							{{ t('spreed', 'Share from Files') }}
 						</ActionButton>
+						<ActionButton v-if="canCreatePoll"
+							:close-after-click="true"
+							@click.prevent="toggleSimplePollsEditor(true)">
+							<Poll slot="icon"
+								:size="20"
+								decorative
+								title="" />
+							{{ t('spreed', 'Create new poll') }}
+						</ActionButton>
 					</Actions>
 				</div>
+				<!-- Input area -->
 				<div class="new-message-form__input">
 					<div class="new-message-form__emoji-picker">
 						<EmojiPicker v-if="!disabled"
@@ -89,7 +100,6 @@
 							:parent-id="messageToBeReplied.id"
 							v-bind="messageToBeReplied" />
 					</div>
-
 					<AdvancedInput ref="advancedInput"
 						v-model="text"
 						:token="token"
@@ -133,6 +143,9 @@
 				</template>
 			</form>
 		</div>
+		<SimplePollsEditor v-if="showSimplePollsEditor"
+			:token="token"
+			@close="toggleSimplePollsEditor(false)" />
 	</div>
 </template>
 
@@ -153,6 +166,8 @@ import EmoticonOutline from 'vue-material-design-icons/EmoticonOutline.vue'
 import Send from 'vue-material-design-icons/Send.vue'
 import BellOff from 'vue-material-design-icons/BellOff.vue'
 import AudioRecorder from './AudioRecorder/AudioRecorder.vue'
+import SimplePollsEditor from './SimplePollsEditor/SimplePollsEditor.vue'
+import Poll from 'vue-material-design-icons/Poll.vue'
 
 const picker = getFilePickerBuilder(t('spreed', 'File to share'))
 	.setMultiSelect(false)
@@ -175,6 +190,8 @@ export default {
 		Send,
 		AudioRecorder,
 		BellOff,
+		SimplePollsEditor,
+		Poll,
 	},
 
 	props: {
@@ -191,6 +208,7 @@ export default {
 			conversationIsFirstInList: false,
 			// True when the audiorecorder component is recording
 			isRecordingAudio: false,
+			showSimplePollsEditor: false,
 		}
 	},
 
@@ -253,6 +271,11 @@ export default {
 				&& this.canShareFiles
 		},
 
+		canCreatePoll() {
+			// FIXME
+			return !this.isOneToOne
+		},
+
 		attachmentFolderFreeSpace() {
 			return this.$store.getters.getAttachmentFolderFreeSpace()
 		},
@@ -294,10 +317,10 @@ export default {
 
 		disabled(newValue) {
 			// the menu is not always available
-			if (!this.$refs.uploadMenu) {
+			if (!this.$refs.attachmentsMenu) {
 				return
 			}
-			this.$refs.uploadMenu.$refs.menuButton.disabled = newValue
+			this.$refs.attachmentsMenu.$refs.menuButton.disabled = newValue
 		},
 
 		text(newValue) {
@@ -557,6 +580,10 @@ export default {
 
 		handleRecording(payload) {
 			this.isRecordingAudio = payload
+		},
+
+		toggleSimplePollsEditor(value) {
+			this.showSimplePollsEditor = value
 		},
 	},
 }
