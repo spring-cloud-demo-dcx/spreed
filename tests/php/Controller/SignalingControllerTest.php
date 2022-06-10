@@ -273,7 +273,7 @@ class SignalingControllerTest extends TestCase {
 			'auth' => [
 				'params' => [
 					'userid' => 'invalid-userid',
-					'ticket' => $this->config->getSignalingTicket($this->userId),
+					'ticket' => $this->config->getSignalingTicket(Config::SIGNALING_TICKET_V1, $this->userId),
 				],
 			],
 		]);
@@ -291,7 +291,7 @@ class SignalingControllerTest extends TestCase {
 			'auth' => [
 				'params' => [
 					'userid' => 'unknown-userid',
-					'ticket' => $this->config->getSignalingTicket('unknown-userid'),
+					'ticket' => $this->config->getSignalingTicket(Config::SIGNALING_TICKET_V1, 'unknown-userid'),
 				],
 			],
 		]);
@@ -320,7 +320,7 @@ class SignalingControllerTest extends TestCase {
 			'auth' => [
 				'params' => [
 					'userid' => $this->userId,
-					'ticket' => $this->config->getSignalingTicket($this->userId),
+					'ticket' => $this->config->getSignalingTicket(Config::SIGNALING_TICKET_V1, $this->userId),
 				],
 			],
 		]);
@@ -341,7 +341,7 @@ class SignalingControllerTest extends TestCase {
 			'auth' => [
 				'params' => [
 					'userid' => '',
-					'ticket' => $this->config->getSignalingTicket(''),
+					'ticket' => $this->config->getSignalingTicket(Config::SIGNALING_TICKET_V1, ''),
 				],
 			],
 		]);
