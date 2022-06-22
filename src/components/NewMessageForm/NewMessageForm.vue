@@ -58,6 +58,15 @@
 							@click.prevent="handleFileShare">
 							{{ t('spreed', 'Share from Nextcloud') }}
 						</ActionButton>
+						<ActionButton v-if="canShareFiles"
+							:close-after-click="true"
+							@click.prevent="createTextFile">
+							<TextBox slot="icon"
+								decorative
+								:size="20"
+								title="" />
+							{{ t('spreed', 'Create text file') }}
+						</ActionButton>
 					</Actions>
 				</div>
 				<div class="new-message-form__input">
@@ -153,6 +162,7 @@ import EmoticonOutline from 'vue-material-design-icons/EmoticonOutline.vue'
 import Send from 'vue-material-design-icons/Send.vue'
 import BellOff from 'vue-material-design-icons/BellOff.vue'
 import AudioRecorder from './AudioRecorder/AudioRecorder.vue'
+import TextBox from 'vue-material-design-icons/TextBox.vue'
 
 const picker = getFilePickerBuilder(t('spreed', 'File to share'))
 	.setMultiSelect(false)
@@ -175,6 +185,7 @@ export default {
 		Send,
 		AudioRecorder,
 		BellOff,
+		TextBox,
 	},
 
 	props: {
@@ -557,6 +568,10 @@ export default {
 
 		handleRecording(payload) {
 			this.isRecordingAudio = payload
+		},
+
+		createTextFile() {
+			console.log('asdfsadfsd')
 		},
 	},
 }
