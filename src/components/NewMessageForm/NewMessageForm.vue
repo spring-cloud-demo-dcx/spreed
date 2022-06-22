@@ -60,7 +60,7 @@
 						</ActionButton>
 						<ActionButton v-if="canShareFiles"
 							:close-after-click="true"
-							@click.prevent="createTextFile">
+							@click.prevent="handleCreateTextFile">
 							<TextBox slot="icon"
 								decorative
 								:size="20"
@@ -155,7 +155,7 @@ import Actions from '@nextcloud/vue/dist/Components/Actions'
 import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
 import EmojiPicker from '@nextcloud/vue/dist/Components/EmojiPicker'
 import { EventBus } from '../../services/EventBus.js'
-import { shareFile } from '../../services/filesSharingServices.js'
+import { shareFile, createTextFile } from '../../services/filesSharingServices.js'
 import { CONVERSATION, PARTICIPANT } from '../../constants.js'
 import Paperclip from 'vue-material-design-icons/Paperclip.vue'
 import EmoticonOutline from 'vue-material-design-icons/EmoticonOutline.vue'
@@ -570,8 +570,11 @@ export default {
 			this.isRecordingAudio = payload
 		},
 
-		createTextFile() {
-			console.log('asdfsadfsd')
+		// Create text file and share it to a conversation
+		async handleCreateTextFile() {
+			const filePath = 'somesdsaddfsalkjnaasdasdme.md'
+			await createTextFile(filePath)
+			shareFile(filePath, this.token)
 		},
 	},
 }
