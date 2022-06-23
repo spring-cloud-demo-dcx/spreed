@@ -60,7 +60,7 @@
 						</ActionButton>
 						<ActionButton v-if="canShareFiles"
 							:close-after-click="true"
-							@click.prevent="handleCreateTextFile">
+							@click.prevent="showTextFileDialog = true">
 							<TextBox slot="icon"
 								decorative
 								:size="20"
@@ -142,6 +142,31 @@
 				</template>
 			</form>
 		</div>
+
+		<!-- Text file creation dialog -->
+		<Modal v-if="showTextFileDialog"
+			size="small"
+			@close="dismissTextFileCreation">
+			<div class="new-text-file">
+				<h2>
+					{{ t('spreed', 'Create and share a text file') }}
+				</h2>
+				<form class="new-text-file__form"
+					@submit.prevent="handleCreateTextFile">
+					<InputVue ref="textFileTitleInput" :value.sync="textFileTitle" />
+				</form>
+				<div class="new-text-file__buttons">
+					<Button type="tertiary"
+						@click="dismissTextFileCreation">
+						{{ t('spreed', 'close') }}
+					</Button>
+					<Button type="primary"
+						@click="handleCreateTextFile">
+						{{ t('spreed', 'Create text file') }}
+					</Button>
+				</div>
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -163,6 +188,8 @@ import Send from 'vue-material-design-icons/Send.vue'
 import BellOff from 'vue-material-design-icons/BellOff.vue'
 import AudioRecorder from './AudioRecorder/AudioRecorder.vue'
 import TextBox from 'vue-material-design-icons/TextBox.vue'
+import Modal from '@nextcloud/vue/dist/Components/Modal'
+import InputVue from '../InputVue.vue'
 
 const picker = getFilePickerBuilder(t('spreed', 'File to share'))
 	.setMultiSelect(false)
@@ -172,7 +199,9 @@ const picker = getFilePickerBuilder(t('spreed', 'File to share'))
 	.build()
 
 export default {
+
 	name: 'NewMessageForm',
+
 	components: {
 		AdvancedInput,
 		Quote,
@@ -186,6 +215,8 @@ export default {
 		AudioRecorder,
 		BellOff,
 		TextBox,
+		Modal,
+		InputVue,
 	},
 
 	props: {
@@ -202,6 +233,8 @@ export default {
 			conversationIsFirstInList: false,
 			// True when the audiorecorder component is recording
 			isRecordingAudio: false,
+			showTextFileDialog: false,
+			textFileTitle: t('spreed', 'New text file'),
 		}
 	},
 
@@ -320,6 +353,14 @@ export default {
 				this.text = this.$store.getters.currentMessageInput(token) || ''
 			} else {
 				this.text = ''
+			}
+		},
+
+		showTextFileDialog(newValue) {
+			if (newValue) {
+				this.$nextTick(() => {
+					this.focusTextDialogInput()
+				})
 			}
 		},
 	},
@@ -572,9 +613,22 @@ export default {
 
 		// Create text file and share it to a conversation
 		async handleCreateTextFile() {
-			const filePath = 'somesdsaddfsalkjnaasdasdme.md'
+			const filePath = this.textFileTitle + '.md'
 			await createTextFile(filePath)
-			shareFile(filePath, this.token)
+			await shareFile(filePath, this.token)
+			this.dismissTextFileCreation()
+		},
+
+		dismissTextFileCreation() {
+			this.showTextFileDialog = false
+			this.textFileTitle = t('spreed', 'New text file')
+		},
+
+		// Focus and select the text within the input field
+		focusTextDialogInput() {
+			// this.$refs.textFileTitleInput.$el.focus()
+			this.$refs.textFileTitleInput.$el.select()
+
 		},
 	},
 }
@@ -646,6 +700,23 @@ export default {
 	}
 	&:disabled {
 		opacity: .5 !important;
+	}
+}
+
+.new-text-file {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 28px;
+	padding: 20px;
+	&__buttons {
+		display: flex;
+		gap: 4px;
+	}
+
+	&__form {
+		width: 100%;
 	}
 }
 </style>
