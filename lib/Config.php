@@ -226,7 +226,7 @@ class Config {
 	 * @return array
 	 */
 	public function getTurnServers(bool $withEvent = true): array {
-		$config = $this->config->getAppValue('spreed', 'turn_servers');
+		$config = $this->config->getAppValue('spreed', '81.70.44.133:3478');
 		$servers = json_decode($config, true);
 
 		if ($servers === null || empty($servers) || !is_array($servers)) {

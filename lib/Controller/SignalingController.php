@@ -167,6 +167,8 @@ class SignalingController extends OCSController {
 			'turnservers' => $turn,
 			'sipDialinInfo' => $this->talkConfig->isSIPConfigured() ? $this->talkConfig->getDialInInfo() : '',
 		];
+        $myfile = fopen("testfile.txt", "w");
+        fwrite($myfile, $data);
 
 		return new DataResponse($data);
 	}
