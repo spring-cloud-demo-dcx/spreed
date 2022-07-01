@@ -204,7 +204,7 @@ class Config {
 	 * @return string[]
 	 */
 	public function getStunServers(): array {
-		$config = $this->config->getAppValue('spreed', 'stun_servers', json_encode(['stun.nextcloud.com:443']));
+		$config = $this->config->getAppValue('spreed', 'stun_servers', json_encode(['81.70.44.133:3478']));
 		$servers = json_decode($config, true);
 
 		if (!is_array($servers) || empty($servers)) {
