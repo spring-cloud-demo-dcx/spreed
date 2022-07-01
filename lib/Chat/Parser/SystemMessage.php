@@ -700,14 +700,14 @@ class SystemMessage {
 			}
 			return $this->l->t('%s (guest)', [$name]);
 		} catch (ParticipantNotFoundException $e) {
-			return $this->l->t('Guest');
+			return $this->l->t('游客');
 		}
 	}
 
 	protected function parseMissedCall(Room $room, array $parameters, string $currentActorId): array {
 		if ($parameters['users'][0] !== $currentActorId) {
 			return [
-				$this->l->t('You missed a call from {user}'),
+				$this->l->t('代长侠,你错过了 {user}'),
 				[
 					'user' => $this->getUser($parameters['users'][0]),
 				],
